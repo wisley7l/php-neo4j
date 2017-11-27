@@ -15,7 +15,7 @@ $version = $client->getNeo4jVersion();
 function createContinentNeo4j($continent){ // function to create continent in Neo4J
   $client = $GLOBALS['client']; // retrieves value from global client variable and saves to a local client variable
    $query = "MERGE (n:Continent { id: {id}, name: {name} }) RETURN n"; // cypher to create Continent Node with id property and name
-   $parameters = array('id' => $continent["geonameId"], 'name' => $continent["name"] ); // parameters to create node
+   $parameters = array('id' => $continent["geonameId"], 'name' => $continent["toponymName"] ); // parameters to create node
    $client->sendCypherQuery($query, $parameters); // function to create Node by passing the value of the cypher and the parameters
 
 }
@@ -24,10 +24,10 @@ function createCountryNeo4j($country,$continentId){ // function to create countr
   $client = $GLOBALS['client']; // retrieves value from global client variable and saves to a local client variable
    $query = "MERGE (n:Country { id: {id}, name: {name},continentId:{continentId} }) RETURN n";
    //cypher to create Country Node with id property and name
-   $parameters = array('id' => $country["geonameId"], 'name' => $country["name"],'continentId'=>$continentId );
+   $parameters = array('id' => $country["geonameId"], 'name' => $country["toponymName"],'continentId'=>$continentId );
    $client->sendCypherQuery($query, $parameters);// function to create Node by passing the value of the cypher and the parameters
    // execute other query for create RelationShip
-   $query2 = 'MATCH (c:Continent),(c2:Country) WHERE c.id = c2.continentId MERGE (c)-[:BelongTo]->(c2)';
+   $query2 = 'MATCH (c:Continent),(c2:Country) WHERE c.id = c2.continentId MERGE (c)-[:HasCountry]->(c2)';
    //Cypher to create Relationship (BelongTo) for Continent and Country
    $client->sendCypherQuery($query2);// function to create Node by passing the value of the cypher
 
@@ -37,13 +37,13 @@ function createStatesNeo4j($states,$countryID){
   $client = $GLOBALS['client']; // retrieves value from global client variable and saves to a local client variable
    $query = "MERGE (n:State { id: {id}, name: {name},countryId:{countryId} }) RETURN n";
    //cypher to create State Node with id property and name
-   $parameters = array('id' => $states["geonameId"], 'name' => $states["name"],'countryId'=>$countryID );
+   $parameters = array('id' => $states["geonameId"], 'name' => $states["toponymName"],'countryId'=>$countryID );
    $client->sendCypherQuery($query, $parameters);// function to create Node by passing the value of the cypher and the parameters
 
    // execute other query for create RelationShip
-   $query2 = 'MATCH (c:Country),(c2:State) WHERE c.id = c2.countryId MERGE (c)-[:BelongTo]->(c2)';
+   $query2 = 'MATCH (c:Country),(c2:State) WHERE c.id = c2.countryId MERGE (c)-[:HasState]->(c2)';
    //Cypher to create Relationship (BelongTo) for State and Country
-   $client->sendCypherQuery($query2);// function to create Node by passing the value of the cypher 
+   $client->sendCypherQuery($query2);// function to create Node by passing the value of the cypher
 
 }
 
