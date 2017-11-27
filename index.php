@@ -1,5 +1,7 @@
 
  <?php
+// reference https://stackoverflow.com/questions/16700960/how-to-use-curl-to-get-json-data-and-decode-the-data
+
 function getUrl($url){
   //  Initiate curl
 $ch = curl_init();
